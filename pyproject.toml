@@ -4,9 +4,15 @@ version = "0.1.0"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "alembic>=1.16.4",
+    "asyncpg>=0.30.0",
     "fastapi>=0.116.1",
+    "greenlet>=3.2.3",
     "pydantic>=2.11.7",
     "pydantic-settings>=2.10.1",
+    "python-dotenv>=1.1.1",
+    "sqlalchemy>=2.0.42",
+    "sqlparse>=0.5.3",
     "uvicorn[standard]>=0.35.0",
 ]
 
@@ -24,6 +30,7 @@ line-length = 120
 lint.preview = true
 lint.select = ["ALL"]
 lint.ignore = [
+    "ANN401", # Dynamically typed expressions (typing.Any) are disallowed
     "COM812", # Skip list trailing slash (because using isort black formatter)
     "CPY001", # Missing copyright notice at top of file
     "D100", # Missing docstring in public module
@@ -31,8 +38,12 @@ lint.ignore = [
     "D203", # Incorrect docstring whitespace before parameters (because using isort black formatter)
     "D211", # No blank line after last docstring
     "D213", # Multi-line docstring summary should start at the second line
+    "DOC402", # `yield` is not documented in docstring
     "I", # All imports (because using isort)
+    "RUF002", # Cyrillic like latin symbols in docstring
+    "RUF003", # Cyrillic like latin symbols in docstring
 ]
+extend-exclude = ["alembic"]
 
 [tool.mypy]
 mypy_path = "src"

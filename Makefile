@@ -1,3 +1,5 @@
+-include .env
+
 help:
 	@awk 'BEGIN {FS = ":.*#"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_-]+:.*?#/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^#@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
@@ -24,3 +26,20 @@ lint-fix: # run linters and formatters with fix
 	@uv run isort .
 	@uv run ruff format .
 	@uv run mypy .
+
+migrate: # apply migrations
+	@uv run alembic upgrade head
+
+mm: # create migration
+	@if [ -z "$(m)" ]; then \
+		echo 'Usage: make mm m="migration message"'; \
+		exit 1; \
+	fi;
+	@uv run alembic revision --autogenerate -m "$(m)"
+
+downgrade: # downgrade migrations
+	@if [ -z "$(r)" ]; then \
+		echo "Usage: make downgrade r=<revision>"; \
+		exit 1; \
+	fi;
+	@uv run alembic downgrade $(r)
