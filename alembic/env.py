@@ -34,7 +34,7 @@ if config.config_file_name is not None:
 target_metadata = Base.metadata
 
 def include_object(
-        obj: SchemaItem,
+        _obj: SchemaItem,
         name: str | None,
         type_: Literal["schema", "table", "column", "index", "unique_constraint", "foreign_key_constraint"],
         _reflected: bool,

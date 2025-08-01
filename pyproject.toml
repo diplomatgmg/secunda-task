@@ -7,6 +7,7 @@ dependencies = [
     "alembic>=1.16.4",
     "asyncpg>=0.30.0",
     "fastapi>=0.116.1",
+    "geoalchemy2[shapely]>=0.18.0",
     "greenlet>=3.2.3",
     "pydantic>=2.11.7",
     "pydantic-settings>=2.10.1",
@@ -35,13 +36,19 @@ lint.ignore = [
     "CPY001", # Missing copyright notice at top of file
     "D100", # Missing docstring in public module
     "D104", # Missing docstring in public package
+    "D105", # Missing docstring in magic method
+    "D107", # Missing docstring in `__init__`
     "D203", # Incorrect docstring whitespace before parameters (because using isort black formatter)
     "D211", # No blank line after last docstring
     "D213", # Multi-line docstring summary should start at the second line
+    "DOC201", # `return` is not documented in docstring
     "DOC402", # `yield` is not documented in docstring
+    "FIX002", # Line contains TODO, consider resolving the issue
     "I", # All imports (because using isort)
     "RUF002", # Cyrillic like latin symbols in docstring
     "RUF003", # Cyrillic like latin symbols in docstring
+    "TD002", # Missing author in TODO
+    "TD003", # Missing issue link for this TODO
 ]
 extend-exclude = ["alembic"]
 
