@@ -4,7 +4,7 @@ from typing import Self
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from database.engine import async_session_factory
-from repositories import BuildingRepository
+from repositories import ActivityRepository, BuildingRepository
 
 
 __all__ = ["UnitOfWork"]
@@ -19,6 +19,7 @@ class UnitOfWork:
     async def __aenter__(self) -> Self:
         self._session = self._session_factory()
         self.buildings = BuildingRepository(self._session)
+        self.activities = ActivityRepository(self._session)
         return self
 
     async def __aexit__(

@@ -27,5 +27,5 @@ async def create_new_building(
     building_data: BuildingCreate,
     service: Annotated[BuildingService, Depends(get_building_service)],
 ) -> BuildingRead:
-    """Эндпоинт для создания нового здания."""
+    """Создать новое здание."""
     return await service.create(building_data)
