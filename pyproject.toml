@@ -43,8 +43,10 @@ lint.ignore = [
     "D213", # Multi-line docstring summary should start at the second line
     "DOC201", # `return` is not documented in docstring
     "DOC402", # `yield` is not documented in docstring
+    "DOC501", # Raised exception missed in docstring
     "FIX002", # Line contains TODO, consider resolving the issue
     "I", # All imports (because using isort)
+    "RUF001", # Cyrillic like latin symbols in docstring
     "RUF002", # Cyrillic like latin symbols in docstring
     "RUF003", # Cyrillic like latin symbols in docstring
     "TD002", # Missing author in TODO

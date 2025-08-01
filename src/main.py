@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 
+from api.exception_handlers import duplicate_address_handler
 from api.v1.endpoints import router as v1_router
 from core.config import app_config, env_config
 from core.config.logging.factory import setup_logger
+from repositories.exceptions import BuildingDuplicateAddressError
 from schemas.healthcheck import HealthResponse
 
 
@@ -18,6 +20,8 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 app.include_router(v1_router, prefix="/api/v1")
+
+app.add_exception_handler(BuildingDuplicateAddressError, duplicate_address_handler)
 
 
 @app.get("/health", tags=["health"])

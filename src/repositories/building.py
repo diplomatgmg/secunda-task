@@ -1,9 +1,11 @@
 from collections.abc import Sequence
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 
 from database.models import Building
 from repositories import BaseRepository
+from repositories.exceptions import BuildingDuplicateAddressError
 
 
 __all__ = ["BuildingRepository"]
@@ -15,7 +17,11 @@ class BuildingRepository(BaseRepository):
     async def add(self, building: Building) -> Building:
         """Добавляет новое здание в базу данных."""
         self._session.add(building)
-        await self._session.flush()
+
+        try:
+            await self._session.flush()
+        except IntegrityError as e:
+            raise BuildingDuplicateAddressError(building.address) from e
 
         return building
 
