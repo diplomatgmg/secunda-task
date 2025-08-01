@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from common.environment.config import env_config
 from core.config import app_config
+from schemas import HealthResponse
 
 
 __all__ = ["app"]
@@ -14,9 +15,9 @@ app = FastAPI(
 )
 
 
-@app.get("/")
-def read_root() -> dict[str, str]:
-    return {"Hello": "World"}
+@app.get("/health", tags=["health"])
+async def healthcheck() -> HealthResponse:
+    return HealthResponse(status="healthy")
 
 
 if __name__ == "__main__":

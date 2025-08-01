@@ -6,9 +6,15 @@ services:
       context: .
       dockerfile: Dockerfile
       target: ${ENV_MODE}
-    env_file:
-      - .env
+    env_file: .env
     ports:
       - "${APP_PORT}:${APP_PORT}"
     volumes:
       - ./src:/app/src
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://${APP_HOST}:${APP_PORT}/health" ]
+      interval: 30s
+      timeout: 1s
+      retries: 3
+      start_period: 5s
+
