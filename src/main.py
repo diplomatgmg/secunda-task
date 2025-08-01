@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 
-from common.environment.config import env_config
-from core.config import app_config
+from core.config import app_config, env_config
 from schemas import HealthResponse
 
 
