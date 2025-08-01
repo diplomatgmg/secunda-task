@@ -11,6 +11,9 @@ services:
       - "${APP_PORT}:${APP_PORT}"
     volumes:
       - ./src:/app/src
+    depends_on:
+      postgis:
+        condition: service_healthy
     healthcheck:
       test: [ "CMD", "wget", "-q", "--spider", "http://${APP_HOST}:${APP_PORT}/health" ]
       interval: 30s
@@ -18,3 +21,20 @@ services:
       retries: 3
       start_period: 5s
 
+  postgis:
+    image: postgis/postgis:17-3.4-alpine
+    platform: ${ENV_DOCKER_PLATFORM}
+    env_file: .env
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 1s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  postgres_data:
