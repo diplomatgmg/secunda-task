@@ -1,10 +1,9 @@
-import logging
-
 from fastapi import FastAPI
 
+from api.v1.endpoints import router as v1_router
 from core.config import app_config, env_config
 from core.config.logging.factory import setup_logger
-from schemas import HealthResponse
+from schemas.healthcheck import HealthResponse
 
 
 __all__ = ["app"]
@@ -13,13 +12,12 @@ __all__ = ["app"]
 setup_logger()
 
 
-logger = logging.getLogger(__name__)
-
 app = FastAPI(
     title=env_config.project_name,
     docs_url="/docs",
     openapi_url="/openapi.json",
 )
+app.include_router(v1_router, prefix="/api/v1")
 
 
 @app.get("/health", tags=["health"])
