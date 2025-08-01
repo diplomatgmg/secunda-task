@@ -1,0 +1,14 @@
+name: ${ENV_PROJECT_NAME}
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ${ENV_MODE}
+    env_file:
+      - .env
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    volumes:
+      - ./src:/app/src
