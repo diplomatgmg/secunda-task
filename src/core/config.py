@@ -10,4 +10,5 @@ class AppConfig(BaseSettings):
 
     model_config = SettingsConfigDict(env_prefix="APP_")
 
+
 app_config = AppConfig()

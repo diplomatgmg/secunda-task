@@ -7,6 +7,8 @@ __all__ = ["env_config"]
 
 
 class EnvConfig(BaseSettings):
+    """Глобальные настройки окружения."""
+
     mode: EnvironmentEnum
     project_name: str
 

@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+
 from common.environment.config import env_config
 from core.config import app_config
 
@@ -14,20 +15,16 @@ app = FastAPI(
 
 
 @app.get("/")
-def read_root():
+def read_root() -> dict[str, str]:
     return {"Hello": "World"}
 
-def main():
+
+if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(
         "main:app",
         host=app_config.host,
         port=app_config.port,
-        reload=env_config.debug
-
+        reload=env_config.debug,
     )
-
-
-if __name__ == "__main__":
-    main()
