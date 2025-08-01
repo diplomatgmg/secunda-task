@@ -1,6 +1,16 @@
 from fastapi import FastAPI
+from common.environment.config import env_config
+from core.config import app_config
 
-app = FastAPI()
+
+__all__ = ["app"]
+
+
+app = FastAPI(
+    title=env_config.project_name,
+    docs_url="/docs",
+    openapi_url="/openapi.json",
+)
 
 
 @app.get("/")
@@ -12,9 +22,9 @@ def main():
 
     uvicorn.run(
         "main:app",
-        host="0.0.0.0", # fixme pydantic-settings
-        port=8000, # fixme pydantic-settings
-        reload=True, # fixme pydantic-settings
+        host=app_config.host,
+        port=app_config.port,
+        reload=env_config.debug
 
     )
 
