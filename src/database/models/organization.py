@@ -44,3 +44,5 @@ class Organization(Base):
     activities: Mapped[list["Activity"]] = relationship(
         secondary=organization_activity_table, back_populates="organizations"
     )
+
+    # FIXME: Можно добавить constrain на name и building_id

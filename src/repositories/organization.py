@@ -20,7 +20,6 @@ class OrganizationRepository(BaseRepository):
         """Добавляет организацию в базу."""
         self._session.add(organization)
         await self._session.flush()
-        await self._session.refresh(organization, ["building", "phone_numbers", "activities"])
 
         return organization
 

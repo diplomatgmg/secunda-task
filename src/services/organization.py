@@ -1,5 +1,6 @@
 from database.models import Organization, PhoneNumber
 from schemas.organization import OrganizationCreate, OrganizationRead
+from schemas.phone_number import PhoneNumberCreate
 from services import BaseService
 from services.exceptions import ActivityNotFoundError, OrganizationNotFoundError
 
@@ -12,6 +13,8 @@ class OrganizationService(BaseService):
 
     async def create(self, org_data: OrganizationCreate) -> OrganizationRead:
         """Создает организацию."""
+        validated_phone_numbers = [PhoneNumberCreate(number=number) for number in org_data.phone_numbers]
+
         async with self._uow:
             activities = await self._uow.activities.get_by_ids(org_data.activity_ids)
             for activity in activities:
@@ -22,13 +25,16 @@ class OrganizationService(BaseService):
                 name=org_data.name,
                 building_id=org_data.building_id,
                 activities=activities,
-                phone_numbers=[PhoneNumber(number=phone) for phone in org_data.phone_numbers],
+                phone_numbers=[PhoneNumber(number=phone.number) for phone in validated_phone_numbers],
             )
 
             created_org = await self._uow.organizations.add(org_model)
             await self._uow.commit()
 
-            return OrganizationRead.model_validate(created_org)
+            # Для подгрузки созданных связей
+            prefetched_org = await self._uow.organizations.get(created_org.id)
+
+            return OrganizationRead.model_validate(prefetched_org)
 
     async def add_phone_to_organization(self, org_id: int, phone_number: str) -> OrganizationRead:
         """Добавляет номер телефона к организации."""
