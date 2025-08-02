@@ -1,37 +1,27 @@
+from collections.abc import Callable, Coroutine
 import logging
+from typing import Any
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
 
-__all__ = [
-    "duplicate_address_handler",
-    "too_much_nested_activity_handler",
-]
-
+__all__ = ["create_exception_handler"]
 
 logger = logging.getLogger(__name__)
 
 
-async def duplicate_address_handler(  # noqa: RUF029
-    _request: Request, exc: Exception
-) -> JSONResponse:
-    """Обработчик ошибки дублирования адреса здания."""
-    logger.debug("Duplicate address: %s", exc)
-
-    return JSONResponse(
-        status_code=400,
-        content={"detail": str(exc)},
-    )
+ExceptionHandler = Callable[[Request, Exception], Coroutine[Any, Any, JSONResponse]]
 
 
-async def too_much_nested_activity_handler(  # noqa: RUF029
-    _request: Request, exc: Exception
-) -> JSONResponse:
-    """Обработчик ошибки слишком вложенной деятельности."""
-    logger.debug("Too much nested activity: %s", exc)
+def create_exception_handler(status_code: int) -> ExceptionHandler:
+    """Фабрика, создающая обработчики исключений."""
 
-    return JSONResponse(
-        status_code=400,
-        content={"detail": str(exc)},
-    )
+    async def exception_handler(_request: Request, exc: Exception) -> JSONResponse:  # noqa: RUF029
+        logger.debug("Handling exception: %s", exc, exc_info=exc)
+        return JSONResponse(
+            status_code=status_code,
+            content={"detail": str(exc)},
+        )
+
+    return exception_handler
