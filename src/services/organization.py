@@ -49,3 +49,25 @@ class OrganizationService(BaseService):
         async with self._uow:
             organizations = await self._uow.organizations.get_all(skip, limit)
             return [OrganizationRead.model_validate(org) for org in organizations]
+
+    async def search_by_name(self, name: str) -> list[OrganizationRead]:
+        """Поиск организаций по имени."""
+        async with self._uow:
+            organizations = await self._uow.organizations.get_by_name(name)
+            return [OrganizationRead.model_validate(org) for org in organizations]
+
+    async def search_by_building(self, building_id: int) -> list[OrganizationRead]:
+        """Поиск организаций в здании."""
+        async with self._uow:
+            organizations = await self._uow.organizations.get_by_building(building_id)
+            return [OrganizationRead.model_validate(org) for org in organizations]
+
+    async def search_by_activity_tree(self, activity_id: int) -> list[OrganizationRead]:
+        """Поиск организаций по деятельности, включая все дочерние."""
+        async with self._uow:
+            all_activity_ids = await self._uow.activities.get_all_children_ids(activity_id)
+            if not all_activity_ids:
+                return []
+
+            organizations = await self._uow.organizations.get_by_activity_ids(list(all_activity_ids))
+            return [OrganizationRead.model_validate(org) for org in organizations]

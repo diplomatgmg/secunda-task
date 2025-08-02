@@ -25,6 +25,39 @@ async def get_all_organizations(
     return OrganizationListResponse(organizations=organizations)
 
 
+@router.get("/search/by_name")
+async def search_organizations_by_name(
+    name: str,
+    service: Annotated[OrganizationService, Depends(get_organization_service)],
+) -> OrganizationListResponse:
+    """Поиск организаций по частичному совпадению имени."""
+    organizations = await service.search_by_name(name)
+
+    return OrganizationListResponse(organizations=organizations)
+
+
+@router.get("/search/by_building/{building_id}")
+async def search_organizations_by_building(
+    building_id: int,
+    service: Annotated[OrganizationService, Depends(get_organization_service)],
+) -> OrganizationListResponse:
+    """Поиск организаций в конкретном здании."""
+    organizations = await service.search_by_building(building_id)
+
+    return OrganizationListResponse(organizations=organizations)
+
+
+@router.get("/search/by_activity/{activity_id}")
+async def search_organizations_by_activity(
+    activity_id: int,
+    service: Annotated[OrganizationService, Depends(get_organization_service)],
+) -> OrganizationListResponse:
+    """Поиск организаций по деятельности (включая дочерние)."""
+    organizations = await service.search_by_activity_tree(activity_id)
+
+    return OrganizationListResponse(organizations=organizations)
+
+
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_new_organization(
     org_data: OrganizationCreate,

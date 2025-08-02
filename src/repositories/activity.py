@@ -52,6 +52,19 @@ class ActivityRepository(BaseRepository):
         result = await self._session.execute(stmt)
         return result.scalars().unique().all()
 
+    async def get_all_children_ids(self, activity_id: int) -> Sequence[int]:
+        """Находит ID всех дочерних деятельностей, включая саму себя."""
+        activity_cte = select(Activity.id).where(Activity.id == activity_id).cte("activity_cte", recursive=True)
+        activity_cte_alias = activity_cte.alias()
+        activity_alias = Activity.__table__.alias()
+        activity_cte = activity_cte.union_all(
+            select(activity_alias.c.id).where(activity_alias.c.parent_id == activity_cte_alias.c.id)
+        )
+
+        result = await self._session.execute(select(activity_cte.c.id))
+
+        return result.scalars().all()
+
     async def _validate_depth(self, activity_id: int | None) -> int:
         """Рекурсивно валидирует глубину вложенности деятельности."""
         depth = 1  # Родитель на первом уровне
