@@ -37,11 +37,7 @@ class ActivityRepository(BaseRepository):
         stmt = (
             select(Activity)
             .where(Activity.parent_id.is_(None))
-            .options(
-                joinedload(Activity.children)
-                .joinedload(Activity.children)
-                .joinedload(Activity.children)
-            )
+            .options(joinedload(Activity.children).joinedload(Activity.children).joinedload(Activity.children))
             .offset(skip)
             .limit(limit)
         )
