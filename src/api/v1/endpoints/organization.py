@@ -5,7 +5,8 @@ from fastapi import APIRouter, Depends
 from starlette import status
 
 from api.dependencies import get_organization_service
-from schemas.organization import OrganizationCreate, OrganizationRead, PhoneNumberCreate
+from schemas.organization import OrganizationCreate, OrganizationRead
+from schemas.phone_number import PhoneNumberCreate
 from services import OrganizationService
 
 

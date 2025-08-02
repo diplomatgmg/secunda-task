@@ -2,29 +2,13 @@ from pydantic import BaseModel, ConfigDict
 
 from schemas.activity import ActivityRead
 from schemas.building import BuildingRead
+from schemas.phone_number import PhoneNumberRead
 
 
 __all__ = [
     "OrganizationCreate",
     "OrganizationRead",
 ]
-
-
-class PhoneNumberBase(BaseModel):
-    """Базовая схема номера телефона организации."""
-
-    number: str
-
-
-class PhoneNumberCreate(PhoneNumberBase):
-    """Схема для создания номера организации."""
-
-
-class PhoneNumberRead(PhoneNumberBase):
-    id: int
-    organization_id: int
-
-    model_config = ConfigDict(from_attributes=True)
 
 
 class OrganizationBase(BaseModel):
