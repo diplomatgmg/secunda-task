@@ -43,3 +43,13 @@ downgrade: # downgrade migrations
 		exit 1; \
 	fi;
 	@uv run alembic downgrade $(r)
+
+dump:
+	@echo "Creating database dump..."
+	@docker-compose exec -T postgis pg_dump --data-only -U ${POSTGRES_USER} -d ${POSTGRES_DB} -p ${POSTGRES_PORT} > dump.sql
+	@echo "Dump created in dump.sql"
+
+load-dump:
+	@echo "Loading data from dump.sql..."
+	@cat dump.sql | docker-compose exec -T postgis psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} -p ${POSTGRES_PORT}
+	@echo "Data loaded."
