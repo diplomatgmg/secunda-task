@@ -71,3 +71,9 @@ class OrganizationService(BaseService):
 
             organizations = await self._uow.organizations.get_by_activity_ids(list(all_activity_ids))
             return [OrganizationRead.model_validate(org) for org in organizations]
+
+    async def search_in_radius(self, lat: float, lon: float, radius: int) -> list[OrganizationRead]:
+        """Поиск организаций в радиусе."""
+        async with self._uow:
+            organizations = await self._uow.organizations.get_in_radius(lat, lon, radius)
+            return [OrganizationRead.model_validate(org) for org in organizations]

@@ -1,9 +1,11 @@
 from collections.abc import Sequence
 
+from geoalchemy2 import WKTElement
+from geoalchemy2.functions import ST_DWithin
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload, selectinload
 
-from database.models import Activity, Organization
+from database.models import Activity, Building, Organization
 from repositories import BaseRepository
 
 
@@ -71,6 +73,27 @@ class OrganizationRepository(BaseRepository):
         stmt = (
             select(Organization)
             .where(Organization.activities.any(Activity.id.in_(activity_ids)))
+            .options(
+                selectinload(Organization.phone_numbers),
+                joinedload(Organization.building),
+                selectinload(Organization.activities)
+                .joinedload(Activity.children)
+                .joinedload(Activity.children)
+                .joinedload(Activity.children),
+            )
+        )
+        result = await self._session.execute(stmt)
+
+        return result.scalars().unique().all()
+
+    async def get_in_radius(self, lat: float, lon: float, radius_meters: int) -> Sequence[Organization]:
+        """Ищет организации в заданном радиусе от точки."""
+        search_point = WKTElement(f"POINT({lon} {lat})", srid=4326)
+
+        stmt = (
+            select(Organization)
+            .join(Building)
+            .where(ST_DWithin(Building.coordinates, search_point, radius_meters, use_spheroid=True))
             .options(
                 selectinload(Organization.phone_numbers),
                 joinedload(Organization.building),

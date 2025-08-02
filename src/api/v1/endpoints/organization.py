@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from starlette import status
 
 from api.dependencies import get_organization_service
@@ -54,6 +54,19 @@ async def search_organizations_by_activity(
 ) -> OrganizationListResponse:
     """Поиск организаций по деятельности (включая дочерние)."""
     organizations = await service.search_by_activity_tree(activity_id)
+
+    return OrganizationListResponse(organizations=organizations)
+
+
+@router.get("/search/in_radius")
+async def search_organizations_in_radius(
+    service: Annotated[OrganizationService, Depends(get_organization_service)],
+    lat: Annotated[float, Query(description="Широта центра поиска")],
+    lon: Annotated[float, Query(description="Долгота центра поиска")],
+    radius: Annotated[int, Query(description="Радиус поиска в метрах")],
+) -> OrganizationListResponse:
+    """Поиск организаций в радиусе от указанной точки."""
+    organizations = await service.search_in_radius(lat, lon, radius)
 
     return OrganizationListResponse(organizations=organizations)
 
