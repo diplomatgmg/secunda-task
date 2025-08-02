@@ -1,10 +1,10 @@
-from collections.abc import Sequence
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from starlette import status
 
 from api.dependencies import get_building_service
+from api.v1.endpoints.schemas import BuildingListResponse
 from schemas.building import BuildingCreate, BuildingRead
 from services.building import BuildingService
 
@@ -17,9 +17,11 @@ async def get_all_buildings(
     service: Annotated[BuildingService, Depends(get_building_service)],
     skip: int = 0,
     limit: int = 100,
-) -> Sequence[BuildingRead]:
+) -> BuildingListResponse:
     """Получить список всех зданий."""
-    return await service.get_all(skip=skip, limit=limit)
+    buildings = await service.get_all(skip=skip, limit=limit)
+
+    return BuildingListResponse(buildings=buildings)
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)

@@ -1,10 +1,10 @@
-from collections.abc import Sequence
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from starlette import status
 
 from api.dependencies import get_organization_service
+from api.v1.endpoints.schemas import OrganizationListResponse
 from schemas.organization import OrganizationCreate, OrganizationRead
 from schemas.phone_number import PhoneNumberCreate
 from services import OrganizationService
@@ -18,9 +18,11 @@ async def get_all_organizations(
     service: Annotated[OrganizationService, Depends(get_organization_service)],
     skip: int = 0,
     limit: int = 100,
-) -> Sequence[OrganizationRead]:
+) -> OrganizationListResponse:
     """Получить список всех организаций."""
-    return await service.get_all(skip=skip, limit=limit)
+    organizations = await service.get_all(skip=skip, limit=limit)
+
+    return OrganizationListResponse(organizations=organizations)
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)

@@ -1,10 +1,10 @@
-from collections.abc import Sequence
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from starlette import status
 
 from api.dependencies import get_activity_service
+from api.v1.endpoints.schemas import ActivityListResponse
 from schemas.activity import ActivityCreate, ActivityRead
 from services import ActivityService
 
@@ -17,9 +17,11 @@ async def get_all_activities(
     service: Annotated[ActivityService, Depends(get_activity_service)],
     skip: int = 0,
     limit: int = 100,
-) -> Sequence[ActivityRead]:
+) -> ActivityListResponse:
     """Получить список всех деятельностей."""
-    return await service.get_all(skip=skip, limit=limit)
+    activities = await service.get_all(skip=skip, limit=limit)
+
+    return ActivityListResponse(activities=activities)
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
