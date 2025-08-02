@@ -5,6 +5,7 @@ __all__ = ["app_config"]
 
 
 class AppConfig(BaseSettings):
+    api_key: str
     host: str
     port: int
 

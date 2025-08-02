@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+from fastapi.params import Depends
 from starlette import status
 
+from api.dependencies import get_api_key
 from api.exception_handlers import (
     create_exception_handler,
 )
@@ -23,7 +25,7 @@ app = FastAPI(
     docs_url="/docs",
     openapi_url="/openapi.json",
 )
-app.include_router(v1_router, prefix="/api/v1")
+app.include_router(v1_router, prefix="/api/v1", dependencies=[Depends(get_api_key)])
 
 app.add_exception_handler(
     BuildingDuplicateAddressError,
