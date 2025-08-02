@@ -45,6 +45,7 @@ lint.ignore = [
     "DOC402", # `yield` is not documented in docstring
     "DOC501", # Raised exception missed in docstring
     "EM101", # Raw string in exceptions
+    "EM102", # Exception must not use an f-string literal, assign to variable first
     "FIX001", # Line contains FIXME, consider resolving the issue
     "FIX002", # Line contains TODO, consider resolving the issue
     "I", # All imports (because using isort)

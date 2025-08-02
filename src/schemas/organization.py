@@ -1,8 +1,11 @@
-from pydantic import BaseModel, ConfigDict
+import re
+
+from pydantic import BaseModel, ConfigDict, field_validator
 
 from schemas.activity import ActivityRead
 from schemas.building import BuildingRead
-from schemas.phone_number import PhoneNumberRead
+from schemas.exceptions import PhoneNumberPatternError
+from schemas.phone_number import PHONE_NUMBER_PATTERN, PhoneNumberRead
 
 
 __all__ = [
@@ -23,6 +26,14 @@ class OrganizationCreate(OrganizationBase):
 
     phone_numbers: list[str]
     activity_ids: list[int]
+
+    @field_validator("phone_numbers")
+    @classmethod
+    def validate_phone_numbers(cls, numbers: list[str]) -> list[str]:  # noqa: D102
+        for number in numbers:
+            if not re.match(PHONE_NUMBER_PATTERN, number):
+                raise PhoneNumberPatternError
+        return numbers
 
 
 class OrganizationRead(OrganizationBase):
