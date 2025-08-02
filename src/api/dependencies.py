@@ -2,13 +2,14 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from services import ActivityService, BuildingService
+from services import ActivityService, BuildingService, OrganizationService
 from unitofwork import UnitOfWork
 
 
 __all__ = [
     "get_activity_service",
     "get_building_service",
+    "get_organization_service",
 ]
 
 
@@ -25,3 +26,8 @@ def get_building_service(uow: Annotated[UnitOfWork, Depends(get_uow)]) -> Buildi
 def get_activity_service(uow: Annotated[UnitOfWork, Depends(get_uow)]) -> ActivityService:
     """FastAPI зависимость для получения экземпляра сервиса ActivityService."""
     return ActivityService(uow)
+
+
+def get_organization_service(uow: Annotated[UnitOfWork, Depends(get_uow)]) -> OrganizationService:
+    """FastAPI зависимость для получения экземпляра сервиса OrganizationService."""
+    return OrganizationService(uow)

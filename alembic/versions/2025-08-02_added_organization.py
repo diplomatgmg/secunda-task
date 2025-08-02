@@ -1,4 +1,4 @@
-"""added organisation
+"""added organization
 
 Revision ID: 34007dcae9dd
 Revises: f9e02cef8882
@@ -7,8 +7,9 @@ Create Date: 2025-08-02 13:46:04.462423
 """
 from typing import Sequence
 
-from alembic import op
 import sqlalchemy as sa
+
+from alembic import op
 
 
 # revision identifiers, used by Alembic.

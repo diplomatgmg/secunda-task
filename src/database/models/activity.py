@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -5,6 +7,9 @@ from database.models import Base
 
 
 __all__ = ["Activity"]
+
+if TYPE_CHECKING:
+    from database.models import Organization
 
 
 class Activity(Base):
@@ -20,3 +25,7 @@ class Activity(Base):
 
     parent: Mapped["Activity"] = relationship(back_populates="children", remote_side=[id])
     children: Mapped[list["Activity"]] = relationship(back_populates="parent")
+
+    organizations: Mapped[list["Organization"]] = relationship(
+        secondary="organization_activity_table", back_populates="activities"
+    )

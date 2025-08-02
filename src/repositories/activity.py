@@ -28,9 +28,17 @@ class ActivityRepository(BaseRepository):
 
     async def get(self, activity_id: int) -> Activity | None:
         """Находит деятельность по ID."""
-        result = await self._session.execute(select(Activity).where(Activity.id == activity_id))
+        stmt = select(Activity).where(Activity.id == activity_id)
+        result = await self._session.execute(stmt)
 
         return result.scalar_one_or_none()
+
+    async def get_by_ids(self, activity_ids: list[int]) -> Sequence[Activity]:
+        """Возвращает список активностей по id."""
+        stmt = select(Activity).where(Activity.id.in_(activity_ids))
+        result = await self._session.execute(stmt)
+
+        return result.scalars().all()
 
     async def get_all(self, skip: int, limit: int) -> Sequence[Activity]:
         """Возвращает список деятельностей с пагинацией."""
